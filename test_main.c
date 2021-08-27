@@ -3,13 +3,23 @@
 #include "calcul.h"
 #include<stdio.h>
 #include<stdlib.h>
+#include<time.h>
 
 
 int main(){
-
-	printf("test 1\n\n");
+	
 	double d1 = 4.8128;
 	double d3= 8.8482;
+	union ieee754_double test;
+	test.d = d3;
+	union ieee754_double test2;
+	test2.d = d1;
+	printf("test pow : %f %.20f %.20f \n",pow2(2),pow2(30), pow2(53));
+	printf("%.20f\n",1.0/(1<<30));
+	FpInterBinaryPrint((FP_INT)test.d);
+	test.ieee.exponent = test2.ieee.exponent;
+	FpInterBinaryPrint((FP_INT)test.d); 
+
 
 	
 	FP_INT f = (FP_INT)(d1); 
@@ -20,8 +30,8 @@ int main(){
 	FP_INT f5 = add(f,f4);
 	FP_INT f6 = sous(f,f4);
 	FP_INT f7 = mult(f,f4);
-	FP_INT f8 = divi(f,f4);
-	printf("x = ");
+	//FP_INT f8 = divi(f,f4);
+	printf("\nx = ");
 	FpInterBinaryPrint(f);
 	printf("uls(x) = ");
 	FpInterBinaryPrint(f2);
@@ -40,8 +50,8 @@ int main(){
 	printf(" x*y : %.15f\n",(double)f7);
 	FpInterBinaryPrint(f7);
 	printf("\n");
-	printf(" x/y : %.15f\n",(double)f8);
-	FpInterBinaryPrint(f8);
+	//printf(" x/y : %.15f\n",(double)f8);
+	//FpInterBinaryPrint(f8);
 	printf("\n");
 
 	printf("test 2\n\n");
@@ -49,19 +59,27 @@ int main(){
 	d3= 8.625;
 
 	
-	f = (FP_INT)(d1); 
+	f = (FP_INT)(d1);
+	printf("wtf\n"); 
 	d2 = uls(f);
+	printf("1\n");
 	f2 = (FP_INT)(d2); 
 	f3 = intval2FpInt(d1,d2);
+	printf("2\n");
 	f4= (FP_INT)(d3);
 	f5 = add(f,f4);
 	f6 = sous(f,f4);
+	printf("3\n");
 	f7 = mult(f,f4);
-	f8 = divi(f,f4);
+	printf("4\n");
+	//f8 = divi(f,f4);
+	printf("5\n");
 	printf("x = ");
 	FpInterBinaryPrint(f);
 	printf("uls(x) = ");
 	FpInterBinaryPrint(f2);
+	printf("x+uls(x) = ");
+	FpInterBinaryPrint((FP_INT)(d1+uls(f)));
 	printf("y = ");
 	FpInterBinaryPrint(f4);
 	printf("en écriture décimale : \n");
@@ -77,8 +95,8 @@ int main(){
 	printf(" x*y : %.15f\n",(double)f7);
 	FpInterBinaryPrint(f7);
 	printf("\n");
-	printf(" x/y : %.15f\n",(double)f8);
-	FpInterBinaryPrint(f8);
+	//printf(" x/y : %.15f\n",(double)f8);
+	//FpInterBinaryPrint(f8);
 	printf("\n");
 	//printf("center : %f\n",d1);
 	//printf("rayon : %15f\n",d2);
@@ -99,7 +117,7 @@ int main(){
 	f5 = add(f,f4);
 	f6 = sous(f,f4);
 	f7 = mult(f,f4);
-	f8 = divi(f,f4);
+	FP_INT f8 = divi(f,f4);
 	FP_INT f9 = intersection(f,f4);
 	printf("x = ");
 	FpInterBinaryPrint(f);
@@ -164,5 +182,6 @@ int main(){
 	printf("en binaire : ");
 	FpInterBinaryPrint(FpIntSin(t1));
 
+	
 	return 0;
 }
