@@ -47,6 +47,10 @@ FP_INT mult(FP_INT x1, FP_INT x2){
 }
 
 FP_INT inv(FP_INT x){
+	if (x==0){
+		return -100000;
+	}
+
 	double nx = (double)x;
 	double r = uls(x);
 	fesetround(FE_DOWNWARD);
@@ -59,6 +63,7 @@ FP_INT inv(FP_INT x){
 	if (nx<=0){
 		c = -1*c;
 	}
+
 	return intval2FpInt(c,lambda);
 }
 
@@ -128,7 +133,6 @@ FP_INT newton(FP_INT A, int imax){
 	MID_RAD invers;
 	xs.mid = (double)I;
 	xs.rad = uls(I);
-	printf("hey\n");
 	FP_INT Inver;
 	int exprI,exprInv,exprX;
 	double x;
@@ -147,8 +151,10 @@ FP_INT newton(FP_INT A, int imax){
 		I = intval2FpInt(2*xs.mid,xs.rad*2);
 		//I = CenterRadius2FPInter(2*xs,exprI+1);
 		Inver = inv(I);
+
 		invers.mid = (double)Inver;
 		invers.rad = uls(Inver);
+
 		x = xs.mid*xs.mid-2;
 		invers.mid = -invers.mid * x;
 		frexp(invers.mid,&e);
@@ -159,9 +165,10 @@ FP_INT newton(FP_INT A, int imax){
 
 		I = intval2FpInt(centre,fabs(rayonxInv));
 		res = X;
+
 		FpInterBinaryPrint(X);
 	//test2--;
-		printf("centre = %.16lf Rayon = %16lf \n",(double)(X),uls(X));	
+		printf("centre = %.20lf Rayon = %.20lf \n",(double)(X),uls(X));	
 		printf("cpt : %d\n",i);
 
 	}
