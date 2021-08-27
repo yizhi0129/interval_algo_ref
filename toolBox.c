@@ -3,30 +3,8 @@
 FP_INT CenterRadius2FPInt(double center,int expR);
 
 
-double pow2(int p){
-	union ieee754_double res;
-	res.d = 2;
-	if (p>20){
-		res.ieee.mantissa0 = 0x0000;
-		res.ieee.mantissa1 = 0x90000000;
 
-		res.ieee.mantissa1 = res.ieee.mantissa1>>32-(p-20);
-		return res.d-2;
-	}else{
-		res.ieee.mantissa0 = 0x9000;
-		res.ieee.mantissa0 = res.ieee.mantissa0>>20-(p);
-	}
-	return res.d-2;
-}
-// Counts zeros from the rigth to the less-weigth bit of a binary number
-int countZeros(int x){
-  int count = 0;
-  while ((x & 1) == 0) {
-      x = x >> 1;
-      count++;
-  }
-  return count;
-}
+
 
 
 //calculates the uls of an FP_INT interval
@@ -34,20 +12,27 @@ double uls(FP_INT f){
 	union ieee754_double x;
 	union ieee754_double res;
 	res.d = 2;
-	
 	x.d = f;
+	int e;
+	long long int N = 1;
+	frexp(x.d,&e);
 	if(x.ieee.mantissa1 !=0){
 		int nb_zero = countZeros(x.ieee.mantissa1);
-		res.ieee.mantissa0 = 0x0000;
 		res.ieee.mantissa1 = 0x80000000;
+		res.ieee.mantissa1 = res.ieee.mantissa1>>33-nb_zero-e;
+		res.d = res.d-2;
+		//res.ieee.exponent = x.ieee.exponent;
+		//return res.d;
 
-		res.ieee.mantissa1 = res.ieee.mantissa1>>(31-nb_zero);
-		return res.d-2;
+		return 1.0/(N<<52-nb_zero-e+1);
 	}else{
-		res.ieee.mantissa0 = 0x8000;
 		int nb_zero = countZeros(x.ieee.mantissa0);
-		res.ieee.mantissa0 = res.ieee.mantissa0>>51-(nb_zero);
-		return res.d-2;
+		res.ieee.mantissa0 = 0x80000;
+		res.ieee.mantissa0 = res.ieee.mantissa0>>21-nb_zero-e;
+		res.d = res.d-2;
+		//res.ieee.exponent = x.ieee.exponent;
+		//return res.d;
+		return 1.0/(N<<20-nb_zero-e+1);
 	}
 	return 1;
 }
