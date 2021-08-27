@@ -2,39 +2,18 @@
 #include"conversion.h"
 
 // returns the Inf-Sup representation of an FP_INT
-INF_SUP FpInt2InfSup(FP_INT x){
-	union ieee754_double f;
-	f.d = (double)(x);
-	double ulss = uls(x);
-	INF_SUP res;
-	res.inf = f.d-ulss;
-	res.sup = f.d+ulss;
-	return res;
-}
+
 
 
 //converts an Inf-Sup interval into its center-radius representation
-MID_RAD InfSup2MidRad(INF_SUP x){
-	union ieee754_double mid;
-	union ieee754_double rad;
 
-	mid.d = x.sup+x.inf;
-	mid.ieee.exponent = mid.ieee.exponent-1;
-	rad.d = x.sup-x.inf;
-	rad.ieee.exponent = rad.ieee.exponent-1;
-
-	MID_RAD res;
-	res.mid = mid.d;
-	res.rad = rad.d;
-	return res;
-}
 
 //convert a center-radius x interval into a FP_INT result y so that x is equal or included into y
 FP_INT intval2FpInt(double center, double rad){
 
 	union ieee754_double cent;
 	cent.d = center;
-
+	long long int N = 1;
 	int center_e;
 	frexp(cent.d,&center_e);
 
@@ -64,7 +43,8 @@ FP_INT intval2FpInt(double center, double rad){
 	unsigned int mask1 = mask1o;
 	while (prec>=0){
 		if(midrnd.ieee.mantissa1 == 1||midrnd.ieee.mantissa0 ==1){
-			midrnd.d = midrnd.d+pow2(prec);
+			midrnd.d = midrnd.d+1.0/(N<<prec);
+			N = 1;
 		}
 		midrnd.ieee.mantissa1 &= mask1;
 		midrnd.ieee.mantissa0 &= mask0;
@@ -75,8 +55,10 @@ FP_INT intval2FpInt(double center, double rad){
 			mask1 = 0x00000000;
 			mask0 = mask0o<<1;
 		}
-		double x_inf = midrnd.d - pow2(prec);
-		double x_sup = midrnd.d + pow2(prec);
+		double x_inf = midrnd.d - 1.0/(N<<prec);
+		N = 1;
+		double x_sup = midrnd.d + 1.0/(N<<prec);
+		N = 1;
 		if(x_inf+rad <= center && center+rad<=x_sup){
 			return (FP_INT)(midrnd.d);
 		}
