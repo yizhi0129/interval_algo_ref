@@ -19,7 +19,11 @@ typedef struct{
 	double rad;
 }MID_RAD;
 
-double pow2(int p);
+static inline double pow2(int p){
+	long long int n = 1;
+
+	return 1.0/(n<<p);
+}
 
 // Fonction qui à partir d'un FP_intervalle rend un centre et le rayon correspondant
 double FPInterv2CenterRadius(FP_INT I,int *expR);
@@ -32,7 +36,14 @@ FP_INT double2FpInter(double c);
 
 FP_INT double2FpInter2(double c);
 
-int countZeros(int x);
+static inline int countZeros(int x){
+  int count = 0;
+  while ((x & 1) == 0) {
+      x = x >> 1;
+      count++;
+  }
+  return count;
+}
 
 double uls(FP_INT f);
 
